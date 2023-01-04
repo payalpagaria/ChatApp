@@ -10,9 +10,18 @@ app.use(express.static(path.join(__dirname,'public')))
 io.on('connection', (socket) => {
     console.log('someone connected!');
     socket.emit('message',' Welcome to the chat');
-    socket.broadcast.emit("hello", "world");
-
+    //broadcast when a user connects
+    socket.broadcast.emit('message', 'A user has entered');
+    // Runs when client disconnects
+    socket.on('disconnect',()=>{
+        io.emit('message','user has left the chat')
+    });
+    //listen for chat msg came from frontend 00
+    socket.on('chatMessage',(msg)=>{
+        io.emit('message',msg);
+    })
 });
+
 
 const PORT=3000 || process.env.PORT;
 
