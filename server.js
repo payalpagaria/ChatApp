@@ -2,16 +2,19 @@ const path=require('path')
 const express=require('express')
 const socketio=require('socket.io')
 const http=require('http')
+const formatMessage = require("./utils/messages");
+
 const app=express()
 const server=http.createServer(app);
 const io=socketio(server);
 app.use(express.static(path.join(__dirname,'public')))
 // run when client connects
+const botname='Chat bot'
 io.on('connection', (socket) => {
     console.log('someone connected!');
-    socket.emit('message',' Welcome to the chat');
+    socket.emit('message',formatMessage(botname,' Welcome to the chat'));
     //broadcast when a user connects
-    socket.broadcast.emit('message', 'A user has entered');
+    socket.broadcast.emit('message', formatMessage(botname,'A user has entered'));
     // Runs when client disconnects
     socket.on('disconnect',()=>{
         io.emit('message','user has left the chat')
